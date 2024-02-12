@@ -1,11 +1,24 @@
-import { getEventById } from "@/lib/actions/event.actions";
+import CheckoutButton from "@/components/shared/CheckoutButton";
+import Collection from "@/components/shared/Collection";
+import {
+  getEventById,
+  getRelatedEventsByCategory,
+} from "@/lib/actions/event.actions";
+import { formatDateTime } from "@/lib/utils";
 import { SearchParamProps } from "@/types";
 import Image from "next/image";
-import React from "react";
 
-const EventDetailsPage = async ({ params: { id } }: SearchParamProps) => {
+const EventDetails = async ({
+  params: { id },
+  searchParams,
+}: SearchParamProps) => {
   const event = await getEventById(id);
-  console.log(event);
+
+  const relatedEvents = await getRelatedEventsByCategory({
+    categoryId: event.category._id,
+    eventId: event._id,
+    page: searchParams.page as string,
+  });
 
   return (
     <>
@@ -18,6 +31,7 @@ const EventDetailsPage = async ({ params: { id } }: SearchParamProps) => {
             height={1000}
             className="h-full min-h-[300px] object-cover object-center"
           />
+
           <div className="flex w-full flex-col gap-8 p-5 md:p-10">
             <div className="flex flex-col gap-6">
               <h2 className="h2-bold">{event.title}</h2>
@@ -86,7 +100,7 @@ const EventDetailsPage = async ({ params: { id } }: SearchParamProps) => {
       </section>
 
       {/* EVENTS with the same category */}
-      {/* <section className="wrapper my-8 flex flex-col gap-8 md:gap-12">
+      <section className="wrapper my-8 flex flex-col gap-8 md:gap-12">
         <h2 className="h2-bold">Related Events</h2>
 
         <Collection
@@ -98,9 +112,9 @@ const EventDetailsPage = async ({ params: { id } }: SearchParamProps) => {
           page={searchParams.page as string}
           totalPages={relatedEvents?.totalPages}
         />
-      </section> */}
+      </section>
     </>
   );
 };
 
-export default EventDetailsPage;
+export default EventDetails;
