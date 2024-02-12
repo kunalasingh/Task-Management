@@ -133,6 +133,7 @@ export async function getOrdersByUser({
   limit = 3,
   page,
 }: GetOrdersByUserParams) {
+  // my tickets / user's tickets that are purchased by user
   try {
     await connectToDatabase();
 
