@@ -100,6 +100,12 @@ export function removeKeysFromQuery({
 }
 
 export const handleError = (error: unknown) => {
-  console.error(error);
-  throw new Error(typeof error === "string" ? error : JSON.stringify(error));
+  if (error instanceof Error) {
+    console.error("Error message:", error.message);
+    console.error("Stack trace:", error.stack);
+    throw error;
+  } else {
+    console.error("Non-standard error:", error);
+    throw new Error(JSON.stringify(error));
+  }
 };
